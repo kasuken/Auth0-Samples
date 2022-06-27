@@ -1,4 +1,7 @@
-﻿namespace Auth0Sample001.Controllers
+﻿using Auth0Sample001.Models;
+using System.Security.Claims;
+
+namespace Auth0Sample001.Controllers
 {
     public class AccountController : Controller
     {
@@ -21,5 +24,16 @@
             await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
+
+[Authorize]
+public IActionResult UserProfile()
+{
+    return View(new UserProfile()
+    {
+        Name = User.Identity.Name,
+        Email = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value,
+        Avatar = User.FindFirst(c => c.Type == "picture")?.Value
+    });
+}
     }
 }
